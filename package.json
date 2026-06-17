@@ -1,0 +1,16 @@
+{
+  "name": "truth-commission",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w web",
+    "build": "npm run build -w web",
+    "lint": "npm run lint -w web",
+    "db:generate": "npm run generate -w @truth-commission/db",
+    "db:migrate": "npm run migrate -w @truth-commission/db",
+    "db:studio": "npm run studio -w @truth-commission/db"
+  }
+}

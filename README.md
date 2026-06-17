@@ -7,8 +7,8 @@ Independent civic platform that ingests official Survivors' Truth Commission mat
 | Block | Status |
 |-------|--------|
 | **A — Recon** | Done — see [`recon/`](recon/) |
-| **B — Foundation** | Next — Next.js + Postgres + Vercel |
-| **C — Subpoena MVP** | Pending |
+| **B — Foundation** | Done — Next.js + Drizzle + cron poll shell |
+| **C — Subpoena MVP** | Next |
 | **D–F** | Pending |
 
 ## Repo layout (planned)

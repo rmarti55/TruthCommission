@@ -30,11 +30,9 @@ Use a **private** repo if you prefer; no secrets should be committed (see `.giti
 ### 2. Vercel project
 
 1. Import the GitHub repo at [vercel.com/new](https://vercel.com/new).
-2. **Root Directory:** `apps/web` (after Block B scaffold — set this before first deploy of the app).
-3. **Framework Preset:** Next.js (auto-detected).
-4. **Build Command:** `cd ../.. && npm run build --workspace=apps/web` if using npm workspaces, or Turborepo `turbo build` once configured.
-
-For a single-app repo (no monorepo yet), root directory stays `.` until Block B adds `apps/web`.
+2. **Root Directory:** `apps/web`
+3. **Install Command:** `npm install --prefix ../..` (auto-set via [`apps/web/vercel.json`](apps/web/vercel.json))
+4. **Framework Preset:** Next.js (auto-detected)
 
 ### 3. Marketplace integrations (Vercel dashboard)
 
