@@ -29,23 +29,25 @@ export function SubscribeForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mt-4 flex flex-wrap gap-3">
+    <form onSubmit={onSubmit} className="mt-5 flex flex-wrap gap-3">
       <input
         type="email"
         required
         value={email}
         onChange={(event) => setEmail(event.target.value)}
         placeholder="you@example.com"
-        className="min-w-[220px] flex-1 rounded-xl border border-stone-700 bg-stone-950 px-4 py-2 text-sm text-stone-100 placeholder:text-stone-500"
+        className="transition-base min-w-[220px] flex-1 rounded-sm border border-border bg-canvas px-4 py-2 font-sans text-sm text-text placeholder:text-muted"
       />
       <button
         type="submit"
         disabled={loading}
-        className="rounded-xl border border-amber-500/40 px-4 py-2 text-sm font-medium text-amber-200 disabled:opacity-50"
+        className="transition-base rounded-sm border border-border-strong bg-surface px-4 py-2 font-sans text-sm font-medium text-text hover:bg-surface-muted disabled:opacity-50"
       >
-        {loading ? "Sending..." : "Get alerts"}
+        {loading ? "Sending…" : "Get alerts"}
       </button>
-      {status ? <p className="w-full text-sm text-stone-400">{status}</p> : null}
+      {status ? (
+        <p className="w-full font-sans text-sm text-muted">{status}</p>
+      ) : null}
     </form>
   );
 }

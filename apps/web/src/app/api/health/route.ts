@@ -24,10 +24,12 @@ export async function GET() {
   return NextResponse.json({
     ok: database === "connected",
     service: "nm-truth-commission-tracker",
-    block: "C",
+    block: "D",
     database,
     blob: isBlobConfigured() ? "configured" : "not_configured",
     cronSecret: Boolean(env.cronSecret()),
+    aiSummaries: Boolean(process.env.OPENROUTER_API_KEY || process.env.AI_GATEWAY_API_KEY),
+    openRouter: Boolean(process.env.OPENROUTER_API_KEY),
     aiGateway: Boolean(process.env.AI_GATEWAY_API_KEY),
     resend: Boolean(process.env.RESEND_API_KEY),
     recon: {

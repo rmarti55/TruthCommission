@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { SubscribeForm } from "@/components/subscribe-form";
+import { LinkCard } from "@/components/ui/link-card";
+import { ListCard } from "@/components/ui/list-card";
+import { PageLayout } from "@/components/ui/page-layout";
+import { SiteHeader } from "@/components/ui/site-header";
+import { StatTile } from "@/components/ui/stat-tile";
 import { getDb } from "@/lib/db";
 import { loadSources } from "@truth-commission/ingest";
-import { artifacts } from "@truth-commission/db";
-import { count, eq } from "drizzle-orm";
+import { artifacts, meetings } from "@truth-commission/db";
+import { count, desc, eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +35,27 @@ export default async function HomePage({
         .where(eq(artifacts.type, "subpoena"))
     : [{ value: 0 }];
 
+  const [meetingCount] = db
+    ? await db
+        .select({ value: count() })
+        .from(meetings)
+        .where(eq(meetings.status, "past"))
+    : [{ value: 0 }];
+
+  const recentMeetings =
+    db === null
+      ? []
+      : await db
+          .select({
+            externalId: meetings.externalId,
+            title: meetings.title,
+            meetingDate: meetings.meetingDate,
+          })
+          .from(meetings)
+          .where(eq(meetings.status, "past"))
+          .orderBy(desc(meetings.meetingDate))
+          .limit(4);
+
   const subscribeMessage =
     params.subscribe === "confirmed"
       ? "Subscription confirmed. You will receive instant alerts."
@@ -40,106 +66,149 @@ export default async function HomePage({
           : null;
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100">
-      <header className="border-b border-stone-800 bg-stone-950/90">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-amber-400/80">
-              Independent civic tracker
-            </p>
-            <h1 className="text-2xl font-semibold tracking-tight">
-              NM Survivors&apos; Truth Commission
-            </h1>
-          </div>
-          <span className="rounded-full border border-stone-700 px-3 py-1 text-xs text-stone-400">
-            Block C MVP
-          </span>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-5xl px-6 py-10">
-        <section className="rounded-2xl border border-stone-800 bg-stone-900/50 p-6">
-          <h2 className="text-lg font-medium text-stone-100">Status</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-400">
-            Live archive of June 2026 subpoenas with searchable summaries. Primary PDFs remain on{" "}
-            <a
-              href="https://www.nmtruthcommission.com/subpoena"
-              className="text-amber-300 underline underline-offset-4"
-              target="_blank"
-              rel="noreferrer"
-            >
-              nmtruthcommission.com
-            </a>
-            .
+    <PageLayout
+      header={
+        <SiteHeader
+          eyebrow="Independent civic tracker"
+          title={"NM Survivors\u2019 Truth Commission"}
+          badge="Block D MVP"
+        />
+      }
+      footer={
+        <p className="mt-20 pb-12 font-sans text-xs leading-relaxed text-muted">
+          Not affiliated with the NM Legislature or the Truth Commission. Primary
+          sources linked on every artifact page.
+        </p>
+      }
+    >
+      <main className="py-12 md:py-16">
+        <section className="panel">
+          <h2 className="text-lg tracking-[-0.015em]">Status</h2>
+          <p className="prose-block mt-3">
+            Searchable archive of June 2026 subpoenas and official meeting transcripts
+            with timestamped captions from Harmony SLIQ. Each meeting page includes the
+            official recording, AI summary, merged key moments, and full caption transcript.
           </p>
-          <dl className="mt-6 grid gap-4 sm:grid-cols-3">
-            <Stat label="Published artifacts" value={String(publishedCount.value)} />
-            <Stat label="Subpoenas ingested" value={String(subpoenaCount.value)} />
-            <Stat
-              label="Cataloged in recon"
-              value={String(sources.summary.subpoenasFound)}
+          <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StatTile
+              label="Published artifacts"
+              value={String(publishedCount.value)}
+              highlight
+              href="/artifacts"
+            />
+            <StatTile
+              label="Subpoenas"
+              value={String(subpoenaCount.value)}
+              href="/artifacts?type=subpoena"
+            />
+            <StatTile
+              label="Meetings"
+              value={String(meetingCount.value)}
+              href="/meetings"
             />
           </dl>
         </section>
 
-        <section className="mt-8 grid gap-4 md:grid-cols-2">
-          <Card
-            title="Subpoena archive"
-            href="/artifacts?type=subpoena"
-            detail={`${subpoenaCount.value} subpoenas searchable with summaries`}
-          />
-          <Card
-            title="Recent Subpoenas (source)"
-            href="https://www.nmtruthcommission.com/subpoena"
-            detail="Official commission subpoena index"
-          />
-          <Card
-            title="Meetings & archives"
-            href="https://www.nmtruthcommission.com/meetingsandarchives"
-            detail="Harmony transcripts via GetClosedCaption API"
-          />
-          <Card title="Health check" href="/api/health" detail="Service + database status JSON" />
+        <section className="mt-20">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <h2 className="text-lg tracking-[-0.015em]">Archive</h2>
+            <Link href="/artifacts" className="font-sans text-sm text-link">
+              View all artifacts
+            </Link>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <LinkCard
+              title="Subpoena archive"
+              href="/artifacts?type=subpoena"
+              detail={`${subpoenaCount.value} subpoenas searchable with summaries and source PDF links`}
+            />
+            <LinkCard
+              title="Meetings"
+              href="/meetings"
+              detail={`${meetingCount.value} meetings with official video and searchable captions`}
+            />
+            <LinkCard
+              title="Full archive"
+              href="/artifacts"
+              detail="Search all published subpoenas"
+            />
+            <LinkCard
+              title="Health check"
+              href="/api/health"
+              detail="Service + database status JSON"
+            />
+          </div>
         </section>
 
-        <section className="mt-8 rounded-2xl border border-stone-800 bg-stone-900/40 p-6">
-          <h2 className="text-lg font-medium">Email alerts</h2>
-          <p className="mt-2 text-sm text-stone-400">
-            Get an instant alert when a new subpoena or official material is published.
+        {recentMeetings.length > 0 ? (
+          <section className="mt-20">
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+              <h2 className="text-lg tracking-[-0.015em]">Recent meetings</h2>
+              <Link href="/meetings" className="font-sans text-sm text-link">
+                All meetings
+              </Link>
+            </div>
+            <ol className="space-y-4">
+              {recentMeetings.map((meeting) => (
+                <ListCard
+                  key={meeting.externalId}
+                  href={`/meetings/${meeting.externalId}`}
+                  title={meeting.title}
+                  meta={
+                    meeting.meetingDate ? (
+                      <p className="mt-1 font-sans text-sm text-muted">
+                        {meeting.meetingDate.toISOString().slice(0, 10)}
+                      </p>
+                    ) : null
+                  }
+                />
+              ))}
+            </ol>
+          </section>
+        ) : null}
+
+        <section className="mt-20">
+          <h2 className="mb-4 text-lg tracking-[-0.015em]">Official sources</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            <LinkCard
+              title="Commission members"
+              href="/committee"
+              detail="Four bipartisan commissioners — names, districts, and contact emails"
+            />
+            <LinkCard
+              title="Recent Subpoenas (commission site)"
+              href="https://www.nmtruthcommission.com/subpoena"
+              detail={`${sources.subpoenas.items.length} subpoenas cataloged — primary PDF source`}
+            />
+            <LinkCard
+              title="Meetings & archives (commission site)"
+              href="https://www.nmtruthcommission.com/meetingsandarchives"
+              detail="Official meeting list, handouts, and Harmony recording links"
+            />
+            <LinkCard
+              title="nmlegis HISC committee"
+              href={sources.sites.nmlegisHisc.committeePage}
+              detail="Agendas, handouts, official schedule, and recording links"
+            />
+            <LinkCard
+              title="Harmony SLIQ portal"
+              href={sources.sites.harmonySliq.portal}
+              detail="Legislative webcast portal — caption API source for transcripts"
+            />
+          </div>
+        </section>
+
+        <section className="panel mt-20 max-w-prose">
+          <h2 className="text-lg tracking-[-0.015em]">Email alerts</h2>
+          <p className="mt-3 font-sans text-sm leading-relaxed text-muted">
+            Get an instant alert when a new subpoena or meeting transcript is published.
           </p>
           {subscribeMessage ? (
-            <p className="mt-3 text-sm text-amber-200">{subscribeMessage}</p>
+            <p className="mt-3 font-sans text-sm text-text">{subscribeMessage}</p>
           ) : null}
           <SubscribeForm />
         </section>
-
-        <p className="mt-10 text-xs text-stone-500">
-          Not affiliated with the NM Legislature or the Truth Commission. Primary sources linked on every artifact page.
-        </p>
       </main>
-    </div>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border border-stone-800 bg-stone-950 p-4">
-      <dt className="text-xs uppercase tracking-wide text-stone-500">{label}</dt>
-      <dd className="mt-2 text-3xl font-semibold text-amber-300">{value}</dd>
-    </div>
-  );
-}
-
-function Card({ title, href, detail }: { title: string; href: string; detail: string }) {
-  const external = href.startsWith("http");
-  return (
-    <Link
-      href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noreferrer" : undefined}
-      className="block rounded-2xl border border-stone-800 bg-stone-900/40 p-5 transition hover:border-amber-500/40 hover:bg-stone-900"
-    >
-      <h3 className="font-medium text-stone-100">{title}</h3>
-      <p className="mt-2 text-sm text-stone-400">{detail}</p>
-    </Link>
+    </PageLayout>
   );
 }

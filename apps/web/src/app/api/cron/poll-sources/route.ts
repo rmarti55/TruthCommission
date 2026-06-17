@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { isCronAuthorized } from "@/lib/env";
+import { finalizeIngestedMeetings } from "@/lib/process-meeting";
 import { finalizeIngestedSubpoenas } from "@/lib/process-subpoena";
-import { ingestSubpoenaUrls, pollAllSources } from "@truth-commission/ingest";
+import {
+  extractHarmonyEventId,
+  ingestHarmonyByEventIds,
+  ingestSubpoenaUrls,
+  normalizeHarmonyUrl,
+  pollAllSources,
+} from "@truth-commission/ingest";
 import { pollRuns } from "@truth-commission/db";
 
 export const dynamic = "force-dynamic";
@@ -26,22 +33,40 @@ export async function GET(request: Request) {
       .filter((link) => link.kind === "subpoena_pdf")
       .map((link) => link.url);
 
-    const ingestResult = await ingestSubpoenaUrls(db, subpoenaUrls);
-    const finalized =
-      ingestResult.ingested.length > 0
-        ? await finalizeIngestedSubpoenas(db, ingestResult.ingested)
+    const harmonyUrls = [...results.commission.links, ...results.nmlegis.links]
+      .filter((link) => link.kind === "harmony_recording")
+      .map((link) => normalizeHarmonyUrl(link.url));
+
+    const harmonyEventIds = harmonyUrls
+      .map((url) => extractHarmonyEventId(url))
+      .filter((id): id is string => Boolean(id));
+
+    const subpoenaIngest = await ingestSubpoenaUrls(db, subpoenaUrls);
+    const subpoenaFinalized =
+      subpoenaIngest.ingested.length > 0
+        ? await finalizeIngestedSubpoenas(db, subpoenaIngest.ingested)
         : [];
+
+    const meetingIngest = await ingestHarmonyByEventIds(db, harmonyEventIds);
+    const meetingFinalized =
+      meetingIngest.ingested.length > 0
+        ? await finalizeIngestedMeetings(db, meetingIngest.ingested)
+        : [];
+
+    const newArtifacts = subpoenaIngest.ingested.length + meetingIngest.ingested.length;
 
     await db.insert(pollRuns).values({
       source: "all",
       startedAt,
       finishedAt: new Date(),
       success: true,
-      newArtifacts: ingestResult.ingested.length,
+      newArtifacts,
       details: {
         poll: results,
-        ingest: ingestResult,
-        finalized,
+        subpoenaIngest,
+        subpoenaFinalized,
+        meetingIngest,
+        meetingFinalized,
       },
     });
 
@@ -49,8 +74,10 @@ export async function GET(request: Request) {
       ok: true,
       polledAt: startedAt.toISOString(),
       results,
-      ingest: ingestResult,
-      finalized,
+      subpoenaIngest,
+      subpoenaFinalized,
+      meetingIngest,
+      meetingFinalized,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown poll error";

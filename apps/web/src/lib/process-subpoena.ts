@@ -22,7 +22,39 @@ export async function finalizeIngestedSubpoenas(
   return results;
 }
 
-export async function finalizeSubpoena(db: Database, artifactId: string) {
+export async function updateSubpoenaSummaries(db: Database, artifactId: string) {
+  const [artifact] = await db
+    .select()
+    .from(artifacts)
+    .where(eq(artifacts.id, artifactId))
+    .limit(1);
+
+  if (!artifact) {
+    throw new Error(`Artifact not found: ${artifactId}`);
+  }
+
+  const summaries = await summarizeSubpoena(artifact);
+  if (!summaries) {
+    return { slug: artifact.slug, summarized: false };
+  }
+
+  await db
+    .update(artifacts)
+    .set({
+      summaryShort: summaries.summaryShort,
+      summaryLong: summaries.summaryLong,
+      updatedAt: new Date(),
+    })
+    .where(eq(artifacts.id, artifactId));
+
+  return { slug: artifact.slug, summarized: true };
+}
+
+export async function finalizeSubpoena(
+  db: Database,
+  artifactId: string,
+  options?: { skipAlerts?: boolean },
+) {
   const [artifact] = await db
     .select()
     .from(artifacts)
@@ -58,14 +90,17 @@ export async function finalizeSubpoena(db: Database, artifactId: string) {
     })
     .where(eq(artifacts.id, artifactId));
 
-  const alertsSent = await notifySubscribers(db, {
-    recipient,
-    complianceDeadline,
-    summaryShort:
-      summaryShort ??
-      `A new subpoena to ${recipient} was published. Compliance deadline: ${complianceDeadline}.`,
-    slug: artifact.slug,
-  });
+  let alertsSent = 0;
+  if (!options?.skipAlerts) {
+    alertsSent = await notifySubscribers(db, {
+      recipient,
+      complianceDeadline,
+      summaryShort:
+        summaryShort ??
+        `A new subpoena to ${recipient} was published. Compliance deadline: ${complianceDeadline}.`,
+      slug: artifact.slug,
+    });
+  }
 
   return { status, summarized: Boolean(summaries), alertsSent };
 }

@@ -2,6 +2,9 @@ import * as cheerio from "cheerio";
 import {
   extractHarmonyEventId,
   getClosedCaptionUrl,
+  getCommissionMembers,
+  getMeetingByEventId,
+  getMeetingItems,
   getSubpoenaItems,
   loadSources,
   normalizeHarmonyUrl,
@@ -127,7 +130,17 @@ export async function pollAllSources() {
   };
 }
 
-export { loadSources, getSubpoenaItems, getClosedCaptionUrl, extractHarmonyEventId };
+export {
+  loadSources,
+  getSubpoenaItems,
+  getCommissionMembers,
+  getMeetingItems,
+  getMeetingByEventId,
+  getClosedCaptionUrl,
+  extractHarmonyEventId,
+  normalizeHarmonyUrl,
+};
+export type { CommissionMember } from "./sources";
 export {
   ingestSubpoenaItem,
   ingestSubpoenaUrls,
@@ -135,3 +148,11 @@ export {
   type IngestedSubpoena,
   type IngestSubpoenasResult,
 } from "./subpoena/ingest";
+export {
+  ingestHarmonyMeeting,
+  ingestHarmonyMeetings,
+  ingestHarmonyByEventIds,
+  ingestHarmonyFromUrls,
+  type IngestedMeeting,
+  type IngestMeetingsResult,
+} from "./harmony/ingest";

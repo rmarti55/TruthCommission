@@ -227,6 +227,53 @@
       }
     }
   ],
+  "commissionMembers": {
+    "sourceUrl": "https://www.nmtruthcommission.com/about-the-commission",
+    "reconDate": "2026-06-17",
+    "intro": "The Truth Commission is a bipartisan body, passed unanimously by the New Mexico House of Representatives in February 2026.",
+    "members": [
+      {
+        "id": "romero",
+        "name": "Rep. Andrea Romero",
+        "role": "Chair",
+        "party": "D",
+        "district": "Santa Fe, District 46",
+        "locationLabel": "D-Santa Fe, NM",
+        "email": "romero@nmtruthcommission.com",
+        "bio": "Romero (D-Santa Fe, District 46) is a licensed attorney, Stanford graduate, and fourth-term state legislator who originated and championed the creation of the Truth Commission. As Chair of the House Rules Committee and Vice-Chair of the Judiciary Committee, she has spent her legislative career advancing equity-driven policy across healthcare, child welfare, housing, and human rights. She launched this Commission because New Mexicans deserve a full accounting of what happened at Zorro Ranch and the systemic failures that allowed it to go unchecked for decades."
+      },
+      {
+        "id": "anaya",
+        "name": "Rep. Marianna Anaya",
+        "role": "Member",
+        "party": "D",
+        "district": "Albuquerque, NM",
+        "locationLabel": "D-Albuquerque, NM",
+        "email": "anaya@nmtruthcommission.com",
+        "bio": "Rep. Anaya was born and raised in Albuquerque by her mother, grandmother, and eight aunts. A lifelong organizer and advocate, she has dedicated her career to protecting vulnerable New Mexicans — expanding civil rights protections, advancing reproductive justice, and championing legislation that centers the dignity and safety of those who have been harmed. She brings that same commitment to this Commission."
+      },
+      {
+        "id": "reeb",
+        "name": "Rep. Andrea Reeb",
+        "role": "Member",
+        "party": "R",
+        "district": "Clovis, District 64",
+        "locationLabel": "R-Clovis, NM",
+        "email": "reeb@nmtruthcommission.com",
+        "bio": "Rep. Andrea Reeb (R-Clovis, District 64) began her career as a prosecutor in 1996 and was elected District Attorney in 2014 for the 9th Judicial District. She brings nearly three decades of prosecutorial leadership to the Commission. As a special prosecutor in numerous public corruption cases, including the former Sheriff of Rio Arriba County, she brings deep experience navigating complex, high-stakes investigations. Rep. Reeb's prosecutorial background and experience in sexual assault cases and violent crime ensure the Commission's work is grounded in rigorous legal standards and a commitment to accountability."
+      },
+      {
+        "id": "hall",
+        "name": "Rep. Bill Hall",
+        "role": "Member",
+        "party": "R",
+        "district": "Aztec, District 3",
+        "locationLabel": "R-Aztec, NM",
+        "email": "hall@nmtruthcommission.com",
+        "bio": "Rep. William \"Bill\" Hall (R-Aztec, District 3) brings over 30 years in law enforcement to the Commission, including 24 years as an FBI agent investigating a myriad of federal crimes. A lifelong New Mexican, he now applies that same dedication to uncovering the truth about what took place at Jeffrey Epstein's Zorro Ranch and ensuring those responsible are held accountable. Rep. Hall's investigative expertise gives the Commission the tools and experience needed to follow the evidence wherever it leads."
+      }
+    ]
+  },
   "watchDates": [
     { "date": "2026-06-18", "event": "HISC teleconference (nmlegis)" },
     { "date": "2026-06-30", "event": "Subpoena compliance deadline" },

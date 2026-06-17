@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ContentWarning } from "@/components/ui/content-warning";
+import { PageLayout } from "@/components/ui/page-layout";
+import { SubPageHeader } from "@/components/ui/sub-page-header";
 import { getDb } from "@/lib/db";
 import { artifacts } from "@truth-commission/db";
 import { eq } from "drizzle-orm";
@@ -24,72 +27,111 @@ export default async function ArtifactDetailPage({
   if (!artifact) notFound();
 
   const metadata = (artifact.metadata ?? {}) as Record<string, unknown>;
+  const isMeeting = artifact.type === "meeting_transcript";
   const recipient = String(metadata.recipient ?? artifact.title);
   const complianceDeadline = String(metadata.complianceDeadline ?? "");
   const issuedDate = String(metadata.issuedDate ?? "");
+  const meetingDate = String(metadata.meetingDate ?? "");
+  const manifestId = String(metadata.manifestId ?? "");
+  const contentWarning = Boolean(metadata.contentWarning);
   const requestedRecordTypes = Array.isArray(metadata.requestedRecordTypes)
     ? (metadata.requestedRecordTypes as string[])
     : [];
   const pdfUrl = String(metadata.cdnUrl ?? artifact.blobUrl ?? artifact.sourceUrl);
+  const title = isMeeting ? artifact.title : recipient;
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100">
-      <header className="border-b border-stone-800">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-5">
-          <div>
-            <Link href="/artifacts" className="text-xs uppercase tracking-[0.2em] text-amber-400/80">
-              Archive
-            </Link>
-            <h1 className="mt-1 text-2xl font-semibold tracking-tight">{recipient}</h1>
-          </div>
-          <Link href="/artifacts" className="text-sm text-stone-400 hover:text-stone-200">
-            Back
-          </Link>
-        </div>
-      </header>
+    <PageLayout
+      header={
+        <SubPageHeader
+          breadcrumb={{ href: "/artifacts", label: "Archive" }}
+          title={title}
+          backHref="/artifacts"
+        />
+      }
+    >
+      <main className="max-w-3xl py-10 md:py-12">
+        {contentWarning ? (
+          <ContentWarning>
+            Content warning: this material includes discussion of sexual assault and
+            survivor testimony.
+          </ContentWarning>
+        ) : null}
 
-      <main className="mx-auto max-w-4xl px-6 py-10">
-        <dl className="grid gap-4 rounded-2xl border border-stone-800 bg-stone-900/40 p-6 sm:grid-cols-2">
+        {isMeeting && manifestId ? (
+          <p className={contentWarning ? "mt-6" : undefined}>
+            <Link href={`/meetings/${manifestId}`} className="text-link">
+              Open meeting page with video and timestamped transcript
+            </Link>
+          </p>
+        ) : null}
+
+        <dl className="panel mt-8 grid gap-4 sm:grid-cols-2">
           {issuedDate ? (
             <div>
-              <dt className="text-xs uppercase tracking-wide text-stone-500">Issued</dt>
-              <dd className="mt-1 text-stone-200">{issuedDate}</dd>
+              <dt className="font-sans text-xs uppercase tracking-[0.12em] text-muted">
+                Issued
+              </dt>
+              <dd className="mt-1 font-sans text-sm text-text">{issuedDate}</dd>
+            </div>
+          ) : null}
+          {meetingDate ? (
+            <div>
+              <dt className="font-sans text-xs uppercase tracking-[0.12em] text-muted">
+                Meeting date
+              </dt>
+              <dd className="mt-1 font-sans text-sm text-text">{meetingDate}</dd>
             </div>
           ) : null}
           {complianceDeadline ? (
             <div>
-              <dt className="text-xs uppercase tracking-wide text-stone-500">Compliance deadline</dt>
-              <dd className="mt-1 text-stone-200">{complianceDeadline}</dd>
+              <dt className="font-sans text-xs uppercase tracking-[0.12em] text-muted">
+                Compliance deadline
+              </dt>
+              <dd className="mt-1 font-sans text-sm text-text">{complianceDeadline}</dd>
             </div>
           ) : null}
-          <div className="sm:col-span-2">
-            <dt className="text-xs uppercase tracking-wide text-stone-500">Original PDF</dt>
-            <dd className="mt-1">
-              <a
-                href={pdfUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-amber-300 underline underline-offset-4 hover:text-amber-200"
-              >
-                View source document
-              </a>
-            </dd>
-          </div>
+          {!isMeeting ? (
+            <div className="sm:col-span-2">
+              <dt className="font-sans text-xs uppercase tracking-[0.12em] text-muted">
+                Original PDF
+              </dt>
+              <dd className="mt-1">
+                <a href={pdfUrl} target="_blank" rel="noreferrer" className="text-link">
+                  View source document
+                </a>
+              </dd>
+            </div>
+          ) : null}
         </dl>
 
-        {artifact.summaryLong ? (
-          <section className="mt-8">
-            <h2 className="text-lg font-medium">Summary</h2>
-            <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-stone-300">
+        {!isMeeting ? (
+          <section className="mt-12">
+            <h2 className="text-lg tracking-[-0.015em]">Summary</h2>
+            {artifact.summaryLong ? (
+              <p className="mt-3 whitespace-pre-wrap font-sans text-sm leading-7 text-muted">
+                {artifact.summaryLong}
+              </p>
+            ) : (
+              <p className="mt-3 font-sans text-sm text-muted">
+                AI summary is not available yet. See requested record types and full
+                extracted text below.
+              </p>
+            )}
+          </section>
+        ) : artifact.summaryLong ? (
+          <section className="mt-12">
+            <h2 className="text-lg tracking-[-0.015em]">Summary</h2>
+            <p className="mt-3 whitespace-pre-wrap font-sans text-sm leading-7 text-muted">
               {artifact.summaryLong}
             </p>
           </section>
         ) : null}
 
         {requestedRecordTypes.length > 0 ? (
-          <section className="mt-8">
-            <h2 className="text-lg font-medium">Requested record types</h2>
-            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-stone-300">
+          <section className="mt-12">
+            <h2 className="text-lg tracking-[-0.015em]">Requested record types</h2>
+            <ul className="mt-3 list-disc space-y-1 pl-5 font-sans text-sm text-muted">
               {requestedRecordTypes.map((type) => (
                 <li key={type}>{type}</li>
               ))}
@@ -98,16 +140,16 @@ export default async function ArtifactDetailPage({
         ) : null}
 
         {artifact.fullText ? (
-          <details className="mt-8 rounded-2xl border border-stone-800 bg-stone-900/30 p-6">
-            <summary className="cursor-pointer text-lg font-medium text-stone-100">
-              Full extracted text
+          <details className="panel mt-12">
+            <summary className="cursor-pointer text-lg tracking-[-0.015em]">
+              {isMeeting ? "Full transcript text" : "Full extracted text"}
             </summary>
-            <pre className="mt-4 max-h-[32rem] overflow-auto whitespace-pre-wrap text-xs leading-6 text-stone-400">
+            <pre className="mt-4 max-h-[32rem] overflow-auto whitespace-pre-wrap font-sans text-xs leading-6 text-muted">
               {artifact.fullText}
             </pre>
           </details>
         ) : null}
       </main>
-    </div>
+    </PageLayout>
   );
 }

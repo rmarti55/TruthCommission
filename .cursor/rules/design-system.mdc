@@ -1,0 +1,29 @@
+---
+description: Crafted warmth design system — use semantic tokens, not stone/amber utilities
+globs:
+  - apps/web/**/*.tsx
+  - apps/web/**/*.css
+alwaysApply: false
+---
+
+# Design system: Crafted Warmth
+
+Read [docs/DESIGN.md](../../docs/DESIGN.md) for full reference.
+
+## Rules
+
+1. **Colors:** Use semantic Tailwind classes — `bg-canvas`, `bg-surface`, `text-text`, `text-muted`, `text-accent`, `border-border`. Never add `stone-*`, `amber-*`, or cool grays for UI.
+2. **Accent budget:** Max 2 decorative accent uses per viewport. Focus/hover with `accent-muted` is exempt.
+3. **Typography:** Headlines use display serif (via `h1–h3` or explicit). UI copy uses `font-sans`. Use the modular scale (`text-xs` through `text-3xl`), not arbitrary sizes.
+4. **Layout:** Wide margins (`px-[var(--margin-page)]`), asymmetric grids, `max-w-prose` for body text.
+5. **Components:** Reuse `PageLayout`, `SiteHeader`, `SubPageHeader`, `StatTile`, `LinkCard`, `ListCard`, `ContentWarning` from `@/components/ui/` before inventing new patterns. Use `.input-field`, `.btn-secondary`, `.panel`, `.text-link` utility classes.
+6. **Depth:** Value shifts + 1px borders only. No drop shadows, glassmorphism, or gradients.
+7. **Radius:** `rounded-sm` (4px) consistently.
+8. **Motion:** `.transition-base` on interactive elements (200ms ease).
+
+## Quick tokens
+
+```
+Canvas #F7F3ED | Text #1A1714 | Accent #B87A5C (scarce)
+Fonts: Newsreader (display) + Source Sans 3 (UI)
+```

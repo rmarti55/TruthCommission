@@ -63,6 +63,43 @@ Unsubscribe: ${params.unsubscribeUrl}`;
   return { sent: true as const };
 }
 
+export async function sendNewMeetingAlert(params: {
+  email: string;
+  title: string;
+  meetingDate: string;
+  summaryShort: string;
+  meetingUrl: string;
+  artifactUrl: string;
+  unsubscribeUrl: string;
+}) {
+  const resend = getResend();
+  const from = process.env.EMAIL_FROM ?? "onboarding@resend.dev";
+
+  const dateLine = params.meetingDate ? ` — ${params.meetingDate}` : "";
+  const text = `${params.title}${dateLine} — key updates
+
+${params.summaryShort}
+
+Watch meeting: ${params.meetingUrl}
+Read full transcript: ${params.artifactUrl}
+
+Unsubscribe: ${params.unsubscribeUrl}`;
+
+  if (!resend) {
+    console.info("[email] RESEND_API_KEY not set; would alert:", params.email, text);
+    return { sent: false as const, logged: true as const };
+  }
+
+  await resend.emails.send({
+    from,
+    to: params.email,
+    subject: `Meeting update: ${params.title}`,
+    text,
+  });
+
+  return { sent: true as const };
+}
+
 export function buildConfirmUrl(token: string): string {
   return `${env.appUrl()}/api/subscribe/confirm?token=${encodeURIComponent(token)}`;
 }

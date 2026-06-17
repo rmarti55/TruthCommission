@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "seed:subpoenas": "tsx scripts/seed-subpoenas.ts",
-    "publish:subpoenas": "tsx scripts/publish-subpoenas.ts"
+    "publish:subpoenas": "tsx scripts/publish-subpoenas.ts",
+    "resummarize:subpoenas": "tsx scripts/resummarize-subpoenas.ts",
+    "seed:meetings": "tsx scripts/seed-meetings.ts",
+    "publish:meetings": "tsx scripts/publish-meetings.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.52",
@@ -18,6 +21,7 @@
     "ai": "^5.0.76",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.2",
+    "hls.js": "^1.6.13",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
