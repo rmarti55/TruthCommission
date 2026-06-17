@@ -128,3 +128,10 @@ export async function pollAllSources() {
 }
 
 export { loadSources, getSubpoenaItems, getClosedCaptionUrl, extractHarmonyEventId };
+export {
+  ingestSubpoenaItem,
+  ingestSubpoenaUrls,
+  ingestSubpoenas,
+  type IngestedSubpoena,
+  type IngestSubpoenasResult,
+} from "./subpoena/ingest";
