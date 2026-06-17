@@ -1,13 +1,21 @@
 import { ReactNode } from "react";
+import { PrimaryNav } from "@/components/ui/header-nav";
 
 type SiteHeaderProps = {
   eyebrow: string;
   title: string;
   badge?: string;
   trailing?: ReactNode;
+  current?: string;
 };
 
-export function SiteHeader({ eyebrow, title, badge, trailing }: SiteHeaderProps) {
+export function SiteHeader({
+  eyebrow,
+  title,
+  badge,
+  trailing,
+  current,
+}: SiteHeaderProps) {
   return (
     <header className="border-b border-border">
       <div
@@ -23,6 +31,7 @@ export function SiteHeader({ eyebrow, title, badge, trailing }: SiteHeaderProps)
           </h1>
         </div>
         <div className="flex flex-col items-start gap-3 md:items-end md:pt-1">
+          <PrimaryNav current={current} />
           {badge ? (
             <span className="rounded-sm border border-border px-3 py-1 font-sans text-xs text-muted">
               {badge}

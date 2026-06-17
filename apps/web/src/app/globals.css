@@ -9,6 +9,7 @@
   --border-strong: #c4bab0;
   --text: #1a1714;
   --text-muted: #6b6358;
+  --text-body: color-mix(in srgb, var(--text-muted) 80%, var(--text) 20%);
   --accent: #b87a5c;
   --accent-muted: #c9a08a;
 
@@ -35,6 +36,7 @@
   --color-border-strong: var(--border-strong);
   --color-text: var(--text);
   --color-muted: var(--text-muted);
+  --color-body: var(--text-body);
   --color-accent: var(--accent);
   --color-accent-muted: var(--accent-muted);
 
@@ -108,7 +110,7 @@ code {
   max-width: 65ch;
   font-size: var(--scale-sm);
   line-height: 1.6;
-  color: var(--text-muted);
+  color: var(--text-body);
 }
 
 .prose-block a {

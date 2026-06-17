@@ -49,7 +49,7 @@ export function ListCard({
         {aside}
       </div>
       {detail ? (
-        <p className="mt-3 font-sans text-sm leading-relaxed text-muted">{detail}</p>
+        <p className="mt-3 font-sans text-sm leading-relaxed text-body">{detail}</p>
       ) : null}
     </li>
   );

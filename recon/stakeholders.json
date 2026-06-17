@@ -1,0 +1,223 @@
+{
+  "version": "1.0.0",
+  "updatedAt": "2026-06-17",
+  "officialPages": [
+    {
+      "id": "nmtruthcommission_contact",
+      "name": "NM Survivors' Truth Commission — Contact",
+      "category": "commission",
+      "url": "https://www.nmtruthcommission.com/contact"
+    },
+    {
+      "id": "nmtruthcommission_about",
+      "name": "NM Survivors' Truth Commission — About",
+      "category": "commission",
+      "url": "https://www.nmtruthcommission.com/about-the-commission"
+    },
+    {
+      "id": "nmtruthcommission_info",
+      "name": "NM Survivors' Truth Commission — Public Information",
+      "category": "commission",
+      "url": "https://www.nmtruthcommission.com/truthcommissioninfo"
+    },
+    {
+      "id": "nmlegis_hisc",
+      "name": "House Special Investigatory Committee (HISC)",
+      "category": "legislature",
+      "url": "https://www.nmlegis.gov/Committee/Interim_Committee?CommitteeCode=HISC"
+    },
+    {
+      "id": "nmlegis_members",
+      "name": "NM Legislature — Find My Legislator",
+      "category": "legislature",
+      "url": "https://www.nmlegis.gov/Members/Legislator_List_All"
+    },
+    {
+      "id": "nmlegis_staff",
+      "name": "NM Legislature — Staff Directory",
+      "category": "legislature",
+      "url": "https://www.nmlegis.gov/Entity/Staff"
+    }
+  ],
+  "organizations": [
+    {
+      "id": "office_of_attorney_general",
+      "name": "Office of the Attorney General",
+      "category": "subpoena_recipient",
+      "website": "https://www.nmdoj.gov",
+      "aliases": ["NMDOJ", "New Mexico Department of Justice"],
+      "crawlPaths": ["/contact-us", "/about", "/"]
+    },
+    {
+      "id": "santa_fe_county_sheriffs_office",
+      "name": "Santa Fe County Sheriff's Office",
+      "category": "subpoena_recipient",
+      "website": "https://www.santafecountynm.gov/sheriff",
+      "aliases": ["SFCSO"],
+      "crawlPaths": ["/contact", "/"]
+    },
+    {
+      "id": "santa_fe_institute",
+      "name": "Santa Fe Institute",
+      "category": "subpoena_recipient",
+      "website": "https://www.santafe.edu",
+      "aliases": ["SFI"],
+      "crawlPaths": ["/about/contact", "/contact"]
+    },
+    {
+      "id": "nm_state_land_office",
+      "name": "New Mexico State Land Office",
+      "category": "subpoena_recipient",
+      "website": "https://www.nmstatelandoffice.org",
+      "aliases": ["State Land Office", "SLO"],
+      "crawlPaths": ["/contact-us", "/about"]
+    },
+    {
+      "id": "nm_department_of_safety",
+      "name": "New Mexico Department of Public Safety",
+      "category": "subpoena_recipient",
+      "website": "https://www.dps.nm.gov",
+      "aliases": ["NMDPS", "Department of Public Safety", "New Mexico Department of Safety"],
+      "crawlPaths": ["/contact-us", "/about"]
+    },
+    {
+      "id": "office_of_the_governor",
+      "name": "Office of the Governor",
+      "category": "subpoena_recipient",
+      "website": "https://www.governor.state.nm.us",
+      "aliases": ["Governor of New Mexico"],
+      "crawlPaths": ["/contact", "/about"]
+    },
+    {
+      "id": "fbi_albuquerque",
+      "name": "FBI Albuquerque Field Office",
+      "category": "federal_agency",
+      "website": "https://www.fbi.gov/contact-us/field-offices/albuquerque",
+      "aliases": ["FBI"],
+      "crawlPaths": ["/"]
+    },
+    {
+      "id": "doj_main",
+      "name": "U.S. Department of Justice",
+      "category": "federal_agency",
+      "website": "https://www.justice.gov",
+      "aliases": ["DOJ", "U.S. Department of Justice"],
+      "crawlPaths": ["/contact-us", "/"]
+    },
+    {
+      "id": "usa_sdnyc",
+      "name": "U.S. Attorney's Office — Southern District of New York",
+      "category": "federal_agency",
+      "website": "https://www.justice.gov/usao-sdny",
+      "aliases": ["SDNY", "U.S. Attorney Southern District of New York"],
+      "crawlPaths": ["/contact-us", "/"]
+    },
+    {
+      "id": "usa_dnm",
+      "name": "U.S. Attorney's Office — District of New Mexico",
+      "category": "federal_agency",
+      "website": "https://www.justice.gov/usao-nm",
+      "aliases": ["U.S. Attorney District of New Mexico"],
+      "crawlPaths": ["/contact-us", "/"]
+    },
+    {
+      "id": "deutsche_bank",
+      "name": "Deutsche Bank",
+      "category": "legal",
+      "website": "https://www.db.com",
+      "aliases": ["Deutsche Bank AG"],
+      "crawlPaths": ["/who-we-are/contact-us"]
+    },
+    {
+      "id": "jpmorgan_chase",
+      "name": "J.P. Morgan Chase",
+      "category": "legal",
+      "website": "https://www.jpmorganchase.com",
+      "aliases": ["JP Morgan", "Chase"],
+      "crawlPaths": ["/contact-us"]
+    },
+    {
+      "id": "epstein_estate",
+      "name": "Epstein Estate",
+      "category": "legal",
+      "website": null,
+      "aliases": ["Jeffrey Epstein estate"],
+      "crawlPaths": [],
+      "notes": "No public website; discover contacts from documents only"
+    },
+    {
+      "id": "nmpress",
+      "name": "New Mexico Press Association",
+      "category": "media",
+      "website": "https://www.nmpress.org",
+      "aliases": ["NMPA"],
+      "crawlPaths": ["/contact", "/about"]
+    },
+    {
+      "id": "santafe_newmexican",
+      "name": "The Santa Fe New Mexican",
+      "category": "media",
+      "website": "https://www.santafenewmexican.com",
+      "aliases": ["Santa Fe New Mexican"],
+      "crawlPaths": ["/site/contact.html", "/contact"]
+    },
+    {
+      "id": "abqjournal",
+      "name": "Albuquerque Journal",
+      "category": "media",
+      "website": "https://www.abqjournal.com",
+      "aliases": [],
+      "crawlPaths": ["/contact"]
+    },
+    {
+      "id": "source_nm",
+      "name": "Source New Mexico",
+      "category": "media",
+      "website": "https://sourcenm.com",
+      "aliases": ["Source NM"],
+      "crawlPaths": ["/about", "/contact"]
+    },
+    {
+      "id": "nm_casa",
+      "name": "New Mexico Coalition of Sexual Assault Programs",
+      "category": "advocacy",
+      "website": "https://www.nmcasa.org",
+      "aliases": ["NMCASA"],
+      "crawlPaths": ["/contact", "/about"]
+    },
+    {
+      "id": "nm_victim_advocates",
+      "name": "New Mexico Crime Victims Reparation Commission",
+      "category": "advocacy",
+      "website": "https://www.cvrc.state.nm.us",
+      "aliases": ["CVRC"],
+      "crawlPaths": ["/contact", "/"]
+    }
+  ],
+  "documentUrls": [
+    {
+      "id": "hisc-handout-jun-2026",
+      "url": "https://www.nmlegis.gov/handouts/HISC%20060126%20Item%201%20HISC.pdf",
+      "type": "handout",
+      "title": "HISC Jun 1, 2026 — Survivors' Truth Commission Handout"
+    },
+    {
+      "id": "hisc-agenda-jun-2026",
+      "url": "https://www.nmlegis.gov/agendas/HISCageJun01.26.pdf",
+      "type": "agenda",
+      "title": "HISC Jun 1, 2026 Agenda"
+    },
+    {
+      "id": "hisc-agenda-jun-18-2026",
+      "url": "https://www.nmlegis.gov/agendas/HISCageJun18.26.pdf",
+      "type": "agenda",
+      "title": "HISC Jun 18, 2026 Agenda"
+    },
+    {
+      "id": "ccjc-presentation-nov-2025",
+      "url": "https://www.nmlegis.gov/handouts/CCJ%20110625%20Item%202%20AR%20MA%20Truth%20Commish.pdf",
+      "type": "presentation",
+      "title": "CCJC Nov 6, 2025 — Truth Commission Presentation"
+    }
+  ]
+}

@@ -17,7 +17,7 @@ export function LinkCard({ title, href, detail }: LinkCardProps) {
       className="transition-base block rounded-sm border border-border bg-surface p-5 hover:border-border-strong hover:bg-surface-muted"
     >
       <h3 className="text-lg leading-snug tracking-[-0.015em]">{title}</h3>
-      <p className="mt-2 font-sans text-sm leading-relaxed text-muted">{detail}</p>
+      <p className="mt-2 font-sans text-sm leading-relaxed text-body">{detail}</p>
     </Link>
   );
 }

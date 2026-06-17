@@ -51,6 +51,7 @@ Add manually in **Project → Settings → Environment Variables**:
 | `EMAIL_FROM` | Production, Preview | Verified sender domain |
 | `AI_GATEWAY_API_KEY` | Production, Preview | Summaries |
 | `CRON_SECRET` | Production, Preview | Random string; secures cron routes |
+| `ADMIN_SECRET` | Production, Preview | Password for `/admin` stakeholder review UI |
 | `NEXT_PUBLIC_APP_URL` | Production, Preview | `https://your-domain.vercel.app` |
 
 ### 4. Local env sync
@@ -73,10 +74,21 @@ In `apps/web/vercel.json`:
     {
       "path": "/api/cron/poll-sources",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/discover-contacts",
+      "schedule": "0 6 * * 0"
     }
   ]
 }
 ```
+
+### 6. Stakeholder discovery + admin outreach
+
+- **Discovery cron:** `/api/cron/discover-contacts` (weekly) scrapes official pages, org contact sites, and ingested documents for stakeholder emails.
+- **Local run:** `npm run discover:contacts -w web` (flags: `--skip-crawl`, `--skip-llm`, `--skip-documents`).
+- **Admin UI:** `/admin` — login with `ADMIN_SECRET`. Review discovered emails, approve contacts, compose and send manual outreach via Resend.
+- **Seeds:** [`recon/stakeholders.json`](../recon/stakeholders.json) lists org crawl targets and document URLs.
 
 Cron requires **Vercel Pro** on the production deployment. Preview deployments do not run crons.
 

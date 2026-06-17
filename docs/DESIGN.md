@@ -16,7 +16,8 @@ Use a **warm neutral ramp** in one hue family. Depth comes from value shifts bet
 | `--border` | `#D4CCC0` | Hairline 1px rules |
 | `--border-strong` | `#C4BAB0` | Hover borders, button outlines |
 | `--text` | `#1A1714` | Primary text (warm near-black) |
-| `--text-muted` | `#6B6358` | Labels, secondary copy |
+| `--text-body` | `color-mix(80% muted, 20% text)` ≈ `#5A544A` | Readable body paragraphs |
+| `--text-muted` | `#6B6358` | Labels, secondary UI copy |
 | `--accent` | `#B87A5C` | Desaturated clay — scarce |
 | `--accent-muted` | `#C9A08A` | Focus rings, subtle interactive states |
 
@@ -80,7 +81,7 @@ Prefer semantic tokens over raw palette utilities:
 
 ```
 bg-canvas bg-surface bg-surface-muted
-text-text text-muted text-accent
+text-text text-body text-muted text-accent
 border-border border-border-strong
 font-sans font-display
 rounded-sm transition-base

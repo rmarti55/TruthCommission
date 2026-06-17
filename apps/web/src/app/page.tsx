@@ -6,6 +6,7 @@ import { PageLayout } from "@/components/ui/page-layout";
 import { SiteHeader } from "@/components/ui/site-header";
 import { StatTile } from "@/components/ui/stat-tile";
 import { getDb } from "@/lib/db";
+import { formatMeetingMeta, loadUpcomingMeetings } from "@/lib/meeting-helpers";
 import { loadSources } from "@truth-commission/ingest";
 import { artifacts, meetings } from "@truth-commission/db";
 import { count, desc, eq } from "drizzle-orm";
@@ -55,6 +56,8 @@ export default async function HomePage({
           .where(eq(meetings.status, "past"))
           .orderBy(desc(meetings.meetingDate))
           .limit(4);
+
+  const upcomingMeetings = (await loadUpcomingMeetings()).slice(0, 2);
 
   const subscribeMessage =
     params.subscribe === "confirmed"
@@ -139,6 +142,40 @@ export default async function HomePage({
             />
           </div>
         </section>
+
+        {upcomingMeetings.length > 0 ? (
+          <section className="mt-20">
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+              <h2 className="text-lg tracking-[-0.015em]">Upcoming meetings</h2>
+              <Link href="/meetings#upcoming" className="font-sans text-sm text-link">
+                Full schedule
+              </Link>
+            </div>
+            <ol className="space-y-4">
+              {upcomingMeetings.map((meeting) => (
+                <ListCard
+                  key={meeting.externalId}
+                  href={`/meetings/${meeting.externalId}`}
+                  title={meeting.title}
+                  meta={
+                    <p className="mt-1 font-sans text-sm text-muted">
+                      {formatMeetingMeta(
+                        meeting.meetingDate,
+                        meeting.format,
+                        meeting.startTime,
+                      )}
+                    </p>
+                  }
+                  detail={
+                    meeting.agendaItemCount
+                      ? `${meeting.agendaItemCount} agenda items · agenda and Zoom links`
+                      : "Agenda and teleconference links"
+                  }
+                />
+              ))}
+            </ol>
+          </section>
+        ) : null}
 
         {recentMeetings.length > 0 ? (
           <section className="mt-20">

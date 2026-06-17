@@ -9,9 +9,10 @@ import {
   loadSources,
   normalizeHarmonyUrl,
 } from "./sources";
+import type { DiscoveredUpcomingMeeting } from "./schedule/sync";
 
 export type DiscoveredLink = {
-  kind: "subpoena_pdf" | "harmony_recording" | "handout_pdf" | "agenda_pdf";
+  kind: "subpoena_pdf" | "harmony_recording" | "handout_pdf" | "agenda_pdf" | "html_page";
   url: string;
   label?: string;
 };
@@ -22,7 +23,60 @@ export type PollResult = {
   links: DiscoveredLink[];
   subpoenaCount: number;
   meetingRecordingCount: number;
+  upcomingMeetings?: DiscoveredUpcomingMeeting[];
 };
+
+const MONTH_NAME_MAP: Record<string, string> = {
+  january: "01",
+  february: "02",
+  march: "03",
+  april: "04",
+  may: "05",
+  june: "06",
+  july: "07",
+  august: "08",
+  september: "09",
+  october: "10",
+  november: "11",
+  december: "12",
+};
+
+function discoverUpcomingFromMeetingsHtml(html: string): DiscoveredUpcomingMeeting[] {
+  const $ = cheerio.load(html);
+  const text = $("body").text().replace(/\s+/g, " ");
+  const discoveries: DiscoveredUpcomingMeeting[] = [];
+  const seen = new Set<string>();
+  const today = new Date().toISOString().slice(0, 10);
+
+  const patterns = [
+    /upcoming[^.]{0,40}?([A-Za-z]+)\s+(\d{4})/gi,
+    /next meeting[^.]{0,40}?([A-Za-z]+)\s+(\d{4})/gi,
+  ];
+
+  for (const pattern of patterns) {
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(text)) !== null) {
+      const monthName = match[1]!.toLowerCase();
+      const year = match[2]!;
+      const month = MONTH_NAME_MAP[monthName];
+      if (!month) continue;
+
+      const date = `${year}-${month}-01`;
+      if (date < today || seen.has(date)) continue;
+      seen.add(date);
+
+      discoveries.push({
+        externalId: `commission-${year}-${month}-upcoming`,
+        title: `Survivors' Truth Commission — ${match[1]} ${year} (commission site)`,
+        date,
+        sourceNotes:
+          "Listed on nmtruthcommission.com/meetingsandarchives; details TBD. nmlegis may list a different date.",
+      });
+    }
+  }
+
+  return discoveries;
+}
 
 async function fetchHtml(url: string): Promise<string> {
   const response = await fetch(url, {
@@ -41,13 +95,32 @@ export async function pollCommissionSite(): Promise<PollResult> {
   const pages = [
     sources.sites.nmtruthcommission.pages.recentSubpoenas,
     sources.sites.nmtruthcommission.pages.meetingsAndArchives,
+    sources.sites.nmtruthcommission.pages.contact,
+    sources.sites.nmtruthcommission.pages.publicInformation,
   ];
 
   const links: DiscoveredLink[] = [];
+  let upcomingMeetings: DiscoveredUpcomingMeeting[] = [];
 
   for (const page of pages) {
     const html = await fetchHtml(`${base}${page}`);
     const $ = cheerio.load(html);
+
+    if (page.includes("meetings")) {
+      upcomingMeetings = discoverUpcomingFromMeetingsHtml(html);
+    }
+
+    if (
+      page.includes("contact") ||
+      page.includes("truthcommissioninfo") ||
+      page.includes("about")
+    ) {
+      links.push({
+        kind: "html_page",
+        url: `${base}${page}`,
+        label: page,
+      });
+    }
 
     $('a[href$=".pdf"], a[href*=".pdf"]').each((_, el) => {
       const href = $(el).attr("href");
@@ -82,6 +155,7 @@ export async function pollCommissionSite(): Promise<PollResult> {
     links,
     subpoenaCount: knownSubpoenas.length,
     meetingRecordingCount: links.filter((l) => l.kind === "harmony_recording").length,
+    upcomingMeetings,
   };
 }
 
@@ -136,10 +210,15 @@ export {
   getCommissionMembers,
   getMeetingItems,
   getMeetingByEventId,
+  getAllMeetings,
+  getUpcomingMeetings,
+  getConfirmedAgendaUrls,
+  parseAgendaDateFromUrl,
+  externalIdFromDate,
   getClosedCaptionUrl,
   extractHarmonyEventId,
   normalizeHarmonyUrl,
-};
+} from "./sources";
 export type { CommissionMember } from "./sources";
 export {
   ingestSubpoenaItem,
@@ -156,3 +235,51 @@ export {
   type IngestedMeeting,
   type IngestMeetingsResult,
 } from "./harmony/ingest";
+export {
+  loadStakeholders,
+  getStakeholderOrganizations,
+  getOfficialPages,
+  getDocumentSeeds,
+  findOrgByName,
+} from "./stakeholders";
+export { extractEmailsFromText } from "./discovery/extract-emails";
+export { extractMailtoFromHtml } from "./discovery/extract-mailto";
+export { crawlOrganization, crawlAllOrganizations } from "./discovery/crawl-org";
+export { crawlOfficialPages } from "./discovery/crawl-official";
+export {
+  extractEmailsFromArtifacts,
+  extractEmailsFromTranscripts,
+} from "./discovery/extract-artifacts";
+export {
+  upsertDiscoveredEmail,
+  seedOrganizationsFromManifest,
+  type DiscoveredEmailInput,
+  type UpsertEmailResult,
+} from "./discovery/upsert";
+export {
+  runContactDiscovery,
+  type ContactDiscoveryOptions,
+  type ContactDiscoveryResult,
+  type LlmStakeholderExtractor,
+} from "./discovery/run-discovery";
+export {
+  ingestPdfDocument,
+  ingestPdfDocumentsFromSeeds,
+  type IngestPdfOptions,
+  type IngestedDocument,
+  type DocumentArtifactType,
+} from "./document/ingest-pdf";
+export {
+  syncMeetingsFromManifest,
+  upsertDiscoveredUpcomingMeeting,
+  markMeetingPastByDate,
+  type SyncedMeeting,
+  type SyncMeetingsResult,
+  type DiscoveredUpcomingMeeting,
+} from "./schedule/sync";
+export {
+  ingestAgendaUrl,
+  ingestAgendaUrls,
+  type IngestedAgenda,
+  type IngestAgendasResult,
+} from "./schedule/ingest";

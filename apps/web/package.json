@@ -11,7 +11,8 @@
     "publish:subpoenas": "tsx scripts/publish-subpoenas.ts",
     "resummarize:subpoenas": "tsx scripts/resummarize-subpoenas.ts",
     "seed:meetings": "tsx scripts/seed-meetings.ts",
-    "publish:meetings": "tsx scripts/publish-meetings.ts"
+    "publish:meetings": "tsx scripts/publish-meetings.ts",
+    "discover:contacts": "tsx scripts/discover-contacts.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.52",

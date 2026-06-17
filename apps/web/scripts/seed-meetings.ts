@@ -1,7 +1,12 @@
 import { config } from "dotenv";
 import { resolve } from "node:path";
 import { createDb } from "@truth-commission/db";
-import { ingestHarmonyMeetings } from "@truth-commission/ingest";
+import {
+  getConfirmedAgendaUrls,
+  ingestAgendaUrls,
+  ingestHarmonyMeetings,
+  syncMeetingsFromManifest,
+} from "@truth-commission/ingest";
 import { finalizeIngestedMeetings } from "../src/lib/process-meeting";
 
 config({ path: resolve(process.cwd(), ".env.local") });
@@ -13,6 +18,18 @@ async function main() {
   }
 
   const db = createDb(postgresUrl);
+
+  const syncResult = await syncMeetingsFromManifest(db);
+  console.log("Sync meetings from manifest:");
+  console.log(`  synced: ${syncResult.synced.length}`);
+  console.log(`  errors: ${syncResult.errors.length}`);
+
+  const agendaResult = await ingestAgendaUrls(db, getConfirmedAgendaUrls());
+  console.log("Ingest agenda PDFs:");
+  console.log(`  ingested: ${agendaResult.ingested.length}`);
+  console.log(`  skipped: ${agendaResult.skipped.length}`);
+  console.log(`  errors: ${agendaResult.errors.length}`);
+
   const result = await ingestHarmonyMeetings(db);
 
   console.log("Seed meetings ingest:");
@@ -25,9 +42,11 @@ async function main() {
     console.log("Published:", finalized);
   }
 
-  if (result.errors.length > 0) {
-    for (const error of result.errors) {
-      console.error(`  - ${error.id}: ${error.error}`);
+  const allErrors = [...syncResult.errors, ...agendaResult.errors, ...result.errors];
+  if (allErrors.length > 0) {
+    for (const error of allErrors) {
+      const id = "id" in error ? error.id : "url" in error ? error.url : "unknown";
+      console.error(`  - ${id}: ${error.error}`);
     }
     process.exitCode = 1;
   }

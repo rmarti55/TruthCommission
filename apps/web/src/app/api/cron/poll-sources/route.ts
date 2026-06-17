@@ -5,10 +5,16 @@ import { finalizeIngestedMeetings } from "@/lib/process-meeting";
 import { finalizeIngestedSubpoenas } from "@/lib/process-subpoena";
 import {
   extractHarmonyEventId,
+  getConfirmedAgendaUrls,
+  getMeetingByEventId,
+  ingestAgendaUrls,
   ingestHarmonyByEventIds,
   ingestSubpoenaUrls,
+  markMeetingPastByDate,
   normalizeHarmonyUrl,
   pollAllSources,
+  syncMeetingsFromManifest,
+  upsertDiscoveredUpcomingMeeting,
 } from "@truth-commission/ingest";
 import { pollRuns } from "@truth-commission/db";
 
@@ -29,6 +35,23 @@ export async function GET(request: Request) {
 
   try {
     const results = await pollAllSources();
+
+    const meetingSync = await syncMeetingsFromManifest(db);
+
+    const commissionUpcoming = results.commission.upcomingMeetings ?? [];
+    const discoveredUpcoming = [];
+    for (const meeting of commissionUpcoming) {
+      discoveredUpcoming.push(await upsertDiscoveredUpcomingMeeting(db, meeting));
+    }
+
+    const agendaUrls = [
+      ...results.nmlegis.links
+        .filter((link) => link.kind === "agenda_pdf")
+        .map((link) => link.url),
+      ...getConfirmedAgendaUrls(),
+    ];
+    const agendaIngest = await ingestAgendaUrls(db, agendaUrls);
+
     const subpoenaUrls = results.commission.links
       .filter((link) => link.kind === "subpoena_pdf")
       .map((link) => link.url);
@@ -48,12 +71,23 @@ export async function GET(request: Request) {
         : [];
 
     const meetingIngest = await ingestHarmonyByEventIds(db, harmonyEventIds);
+
+    for (const eventId of harmonyEventIds) {
+      const manifestMeeting = getMeetingByEventId(eventId);
+      if (manifestMeeting?.date) {
+        await markMeetingPastByDate(db, manifestMeeting.date);
+      }
+    }
+
     const meetingFinalized =
       meetingIngest.ingested.length > 0
         ? await finalizeIngestedMeetings(db, meetingIngest.ingested)
         : [];
 
-    const newArtifacts = subpoenaIngest.ingested.length + meetingIngest.ingested.length;
+    const newArtifacts =
+      subpoenaIngest.ingested.length +
+      meetingIngest.ingested.length +
+      agendaIngest.ingested.length;
 
     await db.insert(pollRuns).values({
       source: "all",
@@ -63,6 +97,9 @@ export async function GET(request: Request) {
       newArtifacts,
       details: {
         poll: results,
+        meetingSync,
+        discoveredUpcoming,
+        agendaIngest,
         subpoenaIngest,
         subpoenaFinalized,
         meetingIngest,
@@ -74,6 +111,9 @@ export async function GET(request: Request) {
       ok: true,
       polledAt: startedAt.toISOString(),
       results,
+      meetingSync,
+      discoveredUpcoming,
+      agendaIngest,
       subpoenaIngest,
       subpoenaFinalized,
       meetingIngest,

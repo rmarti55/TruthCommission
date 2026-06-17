@@ -29,6 +29,18 @@ const MONTH_MAP: Record<string, string> = {
   december: "12",
 };
 
+const STANDARD_AGENDA_ITEMS = [
+  "CALL TO ORDER",
+  "ROLL CALL",
+  "MEMBER INTRODUCTIONS",
+  "PUBLIC COMMENT",
+  "UPDATE ON COMMITTEE SUBPOENAS",
+  "COMMITTEE CORRESPONDENCE",
+  "SURVIVOR TESTIMONY",
+  "OTHER BUSINESS",
+  "ADJOURN",
+];
+
 function parseLongDate(text: string): string | null {
   const match = text.match(/([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})/);
   if (!match) return null;
@@ -40,11 +52,68 @@ function parseLongDate(text: string): string | null {
   return `${match[3]}-${month}-${day}`;
 }
 
-function normalizeAgendaItem(line: string): string {
-  return line
-    .replace(/^\d+[\.\)]\s*/, "")
-    .replace(/\s+/g, " ")
-    .trim();
+function titleCaseItem(item: string): string {
+  return item
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function extractAgendaItems(text: string): string[] {
+  const adaIndex = text.search(ADA_FOOTER_PATTERN);
+  const body = (adaIndex >= 0 ? text.slice(0, adaIndex) : text).replace(/\s+/g, " ").trim();
+
+  const teleconferenceSplit = body.split(/Via\s+Teleconference\s*/i);
+  const afterHeader = teleconferenceSplit.length > 1 ? teleconferenceSplit[1]! : body;
+
+  const timeSplit = afterHeader.match(
+    /^\d{1,2}:\d{2}\s*(?:noon|am|pm)?\s*(.*)$/i,
+  );
+  let remaining = (timeSplit?.[1] ?? afterHeader).trim();
+
+  if (!remaining) {
+    const inlineTime = body.match(
+      /\d{1,2}:\d{2}\s*(?:noon|am|pm)?\s*(.+)$/i,
+    );
+    remaining = inlineTime?.[1]?.trim() ?? "";
+  }
+
+  if (!remaining) return [];
+
+  const items: string[] = [];
+
+  while (remaining.length > 0) {
+    const upperRemaining = remaining.toUpperCase();
+    let matched = false;
+    for (const standardItem of STANDARD_AGENDA_ITEMS) {
+      if (upperRemaining.startsWith(standardItem)) {
+        items.push(titleCaseItem(standardItem));
+        remaining = remaining.slice(standardItem.length).trim();
+        matched = true;
+        break;
+      }
+    }
+
+    if (matched) continue;
+
+    const upper = remaining.toUpperCase();
+    const nextStandardIndex = STANDARD_AGENDA_ITEMS.map((item) => upper.indexOf(item, 1))
+      .filter((index) => index > 0)
+      .sort((a, b) => a - b)[0];
+
+    if (nextStandardIndex !== undefined) {
+      const chunk = remaining.slice(0, nextStandardIndex).trim();
+      if (chunk) items.push(titleCaseItem(chunk));
+      remaining = remaining.slice(nextStandardIndex).trim();
+      continue;
+    }
+
+    if (remaining) {
+      items.push(titleCaseItem(remaining));
+    }
+    break;
+  }
+
+  return items.filter(Boolean);
 }
 
 export function slugFromAgendaDate(date: string): string {
@@ -59,6 +128,7 @@ export function parseAgendaText(fullText: string, fallbackDate?: string): Parsed
   const revisedMatch = fullText.match(REVISED_PATTERN);
   const headerDateMatch = fullText.match(HEADER_DATE_PATTERN);
   const formatMatch = fullText.match(FORMAT_PATTERN);
+  const timeMatch = fullText.match(TIME_PATTERN);
 
   const meetingDate =
     (headerDateMatch ? parseLongDate(headerDateMatch[0]) : null) ??
@@ -69,45 +139,7 @@ export function parseAgendaText(fullText: string, fallbackDate?: string): Parsed
     throw new Error("Could not parse meeting date from agenda PDF");
   }
 
-  const adaIndex = fullText.search(ADA_FOOTER_PATTERN);
-  const body = adaIndex >= 0 ? fullText.slice(0, adaIndex) : fullText;
-
-  const lines = body
-    .split(/\s{2,}|\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
-
-  const agendaItems: string[] = [];
-  let foundTime = false;
-
-  for (const line of lines) {
-    if (/^TENTATIVE AGENDA/i.test(line)) continue;
-    if (/^Revised:/i.test(line)) continue;
-    if (/HOUSE SPECIAL INVESTIGATORY COMMITTEE/i.test(line)) continue;
-    if (/Via\s+[A-Za-z]+/i.test(line) && line.length < 40) continue;
-    if (/^\d{1,2}:\d{2}/.test(line)) {
-      foundTime = true;
-      const itemPart = line.replace(TIME_PATTERN, "").trim();
-      if (itemPart) agendaItems.push(normalizeAgendaItem(itemPart));
-      continue;
-    }
-    if (!foundTime && /^\d{1,2}:\d{2}/.test(line)) continue;
-
-    const normalized = normalizeAgendaItem(line);
-    if (
-      normalized.length > 2 &&
-      !/^[A-Za-z]+\s+\d{1,2},\s+\d{4}$/.test(normalized) &&
-      !/^TENTATIVE/i.test(normalized)
-    ) {
-      agendaItems.push(normalized);
-    }
-  }
-
-  const uniqueItems = [...new Set(agendaItems)].filter(
-    (item) => !/^\d{1,2}:\d{2}/.test(item),
-  );
-
-  const timeMatch = fullText.match(TIME_PATTERN);
+  const agendaItems = extractAgendaItems(fullText);
 
   return {
     meetingDate,
@@ -115,6 +147,6 @@ export function parseAgendaText(fullText: string, fallbackDate?: string): Parsed
     format: formatMatch?.[1]?.toLowerCase(),
     startTime: timeMatch?.[1]?.trim(),
     revisedDate: revisedMatch?.[1],
-    agendaItems: uniqueItems,
+    agendaItems,
   };
 }

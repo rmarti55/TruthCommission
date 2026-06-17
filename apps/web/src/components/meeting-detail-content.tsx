@@ -102,7 +102,7 @@ export function MeetingDetailContent({
           <p className="mt-3 font-sans text-base leading-7 text-text">{summaryShort}</p>
         ) : null}
         {summaryLong ? (
-          <p className="mt-4 whitespace-pre-wrap font-sans text-sm leading-7 text-muted">
+          <p className="mt-4 whitespace-pre-wrap font-sans text-sm leading-7 text-body">
             {summaryLong}
           </p>
         ) : (

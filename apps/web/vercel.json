@@ -4,6 +4,10 @@
     {
       "path": "/api/cron/poll-sources",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/discover-contacts",
+      "schedule": "0 6 * * 0"
     }
   ]
 }

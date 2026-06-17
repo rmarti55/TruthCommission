@@ -47,6 +47,7 @@ export default async function ArtifactDetailPage({
           breadcrumb={{ href: "/artifacts", label: "Archive" }}
           title={title}
           backHref="/artifacts"
+          current="/artifacts"
         />
       }
     >
@@ -109,7 +110,7 @@ export default async function ArtifactDetailPage({
           <section className="mt-12">
             <h2 className="text-lg tracking-[-0.015em]">Summary</h2>
             {artifact.summaryLong ? (
-              <p className="mt-3 whitespace-pre-wrap font-sans text-sm leading-7 text-muted">
+              <p className="mt-3 whitespace-pre-wrap font-sans text-sm leading-7 text-body">
                 {artifact.summaryLong}
               </p>
             ) : (
@@ -122,7 +123,7 @@ export default async function ArtifactDetailPage({
         ) : artifact.summaryLong ? (
           <section className="mt-12">
             <h2 className="text-lg tracking-[-0.015em]">Summary</h2>
-            <p className="mt-3 whitespace-pre-wrap font-sans text-sm leading-7 text-muted">
+            <p className="mt-3 whitespace-pre-wrap font-sans text-sm leading-7 text-body">
               {artifact.summaryLong}
             </p>
           </section>
@@ -131,7 +132,7 @@ export default async function ArtifactDetailPage({
         {requestedRecordTypes.length > 0 ? (
           <section className="mt-12">
             <h2 className="text-lg tracking-[-0.015em]">Requested record types</h2>
-            <ul className="mt-3 list-disc space-y-1 pl-5 font-sans text-sm text-muted">
+            <ul className="mt-3 list-disc space-y-1 pl-5 font-sans text-sm text-body">
               {requestedRecordTypes.map((type) => (
                 <li key={type}>{type}</li>
               ))}

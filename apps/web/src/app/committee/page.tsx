@@ -13,10 +13,10 @@ export default function CommitteePage() {
     <PageLayout
       header={
         <SubPageHeader
-          breadcrumb={{ href: "/", label: "NM Truth Commission Tracker" }}
           title="Commission members"
           backHref="/"
           backLabel="Home"
+          current="/committee"
         />
       }
       footer={

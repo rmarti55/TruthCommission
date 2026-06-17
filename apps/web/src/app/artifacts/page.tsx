@@ -79,10 +79,10 @@ export default async function ArtifactsPage({
     <PageLayout
       header={
         <SubPageHeader
-          breadcrumb={{ href: "/", label: "NM Truth Commission Tracker" }}
           title="Archive"
           backHref="/"
           backLabel="Home"
+          current="/artifacts"
         />
       }
     >
@@ -118,7 +118,7 @@ export default async function ArtifactsPage({
               <section className="panel mb-10">
                 <h2 className="text-lg tracking-[-0.015em]">June 2026 subpoena batch</h2>
                 {batchSummaryLong ? (
-                  <p className="mt-3 whitespace-pre-wrap font-sans text-sm leading-7 text-muted">
+                  <p className="mt-3 whitespace-pre-wrap font-sans text-sm leading-7 text-body">
                     {batchSummaryLong}
                   </p>
                 ) : (
