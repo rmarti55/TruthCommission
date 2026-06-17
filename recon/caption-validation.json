@@ -1,0 +1,59 @@
+{
+  "validatedAt": "2026-06-17",
+  "api": "https://sg001-harmony.sliq.net/00293/Harmony/en/api/PowerBrowserData/GetClosedCaption?meetingID={eventId}",
+  "events": [
+    {
+      "eventId": "79821",
+      "meetingDate": "2026-06-01",
+      "title": "House - Investigatory Subcommittee",
+      "status": "Adjourned",
+      "startTime": "2026-06-01T14:07:35.0000000",
+      "endTime": "2026-06-01T14:53:10.0000000",
+      "durationSeconds": 2736,
+      "captionLangKey": "lang",
+      "segmentCount": 1275,
+      "sampleFile": "samples/captions-79821.json",
+      "sampleBytes": 185165,
+      "firstSegment": {
+        "Begin": "2026-06-01T14:07:49.981",
+        "End": "2026-06-01T14:07:50.231",
+        "Content": "this committee will hear content"
+      },
+      "lastSegment": {
+        "Begin": "2026-06-01T14:53:08.966",
+        "End": "2026-06-01T14:53:09.216",
+        "Content": "hear back from subpoenas and"
+      },
+      "notableContent": [
+        { "approxTime": "2026-06-01T14:09:29", "topic": "14 subpoenas announced" },
+        { "approxTime": "2026-06-01T14:07:49", "topic": "Survivor content warning" },
+        { "approxTime": "2026-06-01T14:08:17", "topic": "Helpline 1-844-667-2457" }
+      ],
+      "streamUrl": "https://sg002-live.sliq.net/00293-vod-2/_definst_/2026/06/01/House%20-%20Investigatory%20Subcommittee_2026-06-01-14.07.35_79821_14.mp4/playlist.m3u8"
+    },
+    {
+      "eventId": "79719",
+      "meetingDate": "2026-02-17",
+      "title": "House - Investigatory Subcommittee",
+      "status": "Adjourned",
+      "startTime": "2026-02-17T10:33:46.0000000",
+      "endTime": "2026-02-17T10:47:31.0000000",
+      "durationSeconds": 825,
+      "captionLangKey": "en",
+      "segmentCount": 368,
+      "sampleFile": "samples/captions-79719.json",
+      "sampleBytes": 53560,
+      "firstSegment": {
+        "Begin": "2026-02-17T10:33:56.676",
+        "End": "2026-02-17T10:33:56.926",
+        "Content": "committee to investigate"
+      },
+      "lastSegment": {
+        "Begin": "2026-02-17T10:47:02.261",
+        "End": "2026-02-17T10:47:02.511",
+        "Content": "adjourned"
+      },
+      "streamUrl": "https://sg002-live.sliq.net/00293-vod-2/_definst_/2026/02/17/House%20-%20Investigatory%20Subcommittee_2026-02-17-10.33.46_79719_34.mp4/playlist.m3u8"
+    }
+  ]
+}

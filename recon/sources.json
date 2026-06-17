@@ -1,0 +1,265 @@
+{
+  "version": "1.0.0",
+  "reconDate": "2026-06-17",
+  "summary": {
+    "subpoenasFound": 6,
+    "subpoenasAnnouncedTotal": 14,
+    "meetingsCataloged": 4,
+    "harmonyEventsValidated": 2,
+    "notes": [
+      "Commission site handout link for Jun 1 (/s/NM-Survivors-Truth-Commission-6126.pdf) returns HTTP 404; use nmlegis handout as fallback.",
+      "Jun 1 Harmony recording on commission site uses linkprotect wrapper; canonical URL resolves to event 79821.",
+      "8 additional subpoenas expected (FBI, DOJ, Epstein estate, banks, etc.)."
+    ]
+  },
+  "sites": {
+    "nmtruthcommission": {
+      "baseUrl": "https://www.nmtruthcommission.com",
+      "platform": "squarespace",
+      "sitemap": "https://www.nmtruthcommission.com/sitemap.xml",
+      "pages": {
+        "home": "/",
+        "about": "/about-the-commission",
+        "publicInformation": "/truthcommissioninfo",
+        "recentSubpoenas": "/subpoena",
+        "meetingsAndArchives": "/meetingsandarchives",
+        "contact": "/contact"
+      },
+      "pollTargets": [
+        "/subpoena",
+        "/meetingsandarchives",
+        "/truthcommissioninfo"
+      ],
+      "pdfUrlPattern": "/s/{filename}.pdf",
+      "pdfResolveBehavior": "302 redirect to static1.squarespace.com CDN"
+    },
+    "nmlegisHisc": {
+      "committeePage": "https://www.nmlegis.gov/Committee/Interim_Committee?CommitteeCode=HISC",
+      "committeeCode": "HISC",
+      "patterns": {
+        "agendaPdf": "https://www.nmlegis.gov/agendas/HISCage{Mon}{DD}.26.pdf",
+        "handoutsList": "https://www.nmlegis.gov/Committee/Handouts_List?CommitteeCode=HISC&Date={M/D/YYYY}",
+        "handoutItem": "https://www.nmlegis.gov/Committee/Handouts?CommitteeCode=HISC&Date={M/D/YYYY}&ItemNumber={N}",
+        "handoutPdf": "https://www.nmlegis.gov/handouts/{filename}",
+        "harmonyRecording": "https://sg001-harmony.sliq.net/00293/Harmony/en/PowerBrowser/PowerBrowserV{2|3}/{date}/-1/{eventId}",
+        "zoomWebinar": "https://us02web.zoom.us/j/88271745882",
+        "authorizingResolution": "https://www.nmlegis.gov/Legislation/Legislation?chamber=H&legType=R&legNo=1&year=26"
+      },
+      "confirmedAgendas": [
+        {
+          "date": "2026-06-18",
+          "url": "https://www.nmlegis.gov/agendas/HISCageJun18.26.pdf",
+          "bytes": 36147
+        },
+        {
+          "date": "2026-06-01",
+          "url": "https://www.nmlegis.gov/agendas/HISCageJun01.26.pdf",
+          "bytes": 34175
+        }
+      ]
+    },
+    "harmonySliq": {
+      "portal": "https://sg001-harmony.sliq.net/00293/harmony",
+      "apiBase": "https://sg001-harmony.sliq.net/00293/Harmony/en/api/PowerBrowserData",
+      "endpoints": {
+        "getNewData": "{apiBase}/GetNewData?id={eventId}&eventLast=undefined&agendaLast=undefined&speakerLast=undefined&viewMode=0&venueId=4",
+        "getClosedCaption": "{apiBase}/GetClosedCaption?meetingID={eventId}",
+        "getStreamData": "{apiBase}/GetStreamData?id={eventId}"
+      },
+      "captionFormat": {
+        "structure": "object keyed by language code (e.g. lang, en)",
+        "segmentFields": ["Begin", "End", "Content"],
+        "beginEndFormat": "ISO-8601 datetime with milliseconds"
+      },
+      "eventIdExtraction": "Last path segment before hash in PowerBrowser URL, e.g. .../-1/79821"
+    }
+  },
+  "subpoenas": {
+    "indexPage": "https://www.nmtruthcommission.com/subpoena",
+    "navLabel": "Public Information > Recent Subpoenas",
+    "batch": "2026-06",
+    "issuedDate": "2026-06-05",
+    "complianceDeadline": "2026-06-30",
+    "items": [
+      {
+        "id": "office_of_attorney_general",
+        "recipient": "Office of the Attorney General",
+        "aliases": ["NMDOJ", "New Mexico Department of Justice"],
+        "sitePath": "/s/2026-06-05-HR1-Subpoena-Duces-Tecum-to-Office-of-AG.pdf",
+        "url": "https://www.nmtruthcommission.com/s/2026-06-05-HR1-Subpoena-Duces-Tecum-to-Office-of-AG.pdf",
+        "cdnUrl": "https://static1.squarespace.com/static/6a07526f760116498ce6b908/t/6a2c8294f1f59f5113eda893/1781301908676/2026-06-05+HR1+Subpoena+Duces+Tecum+to+Office+of+AG-.pdf",
+        "bytes": 280811,
+        "verified": true
+      },
+      {
+        "id": "santa_fe_county_sheriffs_office",
+        "recipient": "Santa Fe County Sheriff's Office",
+        "sitePath": "/s/2026-06-05_HR-1_SF_County_Sheriffs_Office_Subpoena_Duces_Tecum.pdf",
+        "url": "https://www.nmtruthcommission.com/s/2026-06-05_HR-1_SF_County_Sheriffs_Office_Subpoena_Duces_Tecum.pdf",
+        "cdnUrl": "https://static1.squarespace.com/static/6a07526f760116498ce6b908/t/6a2c82e6aa66fe03b4e2ee07/1781301991206/2026-06-05_HR-1_SF_County_Sheriffs_Office_Subpoena_Duces_Tecum.pdf",
+        "bytes": 1501756,
+        "verified": true
+      },
+      {
+        "id": "santa_fe_institute",
+        "recipient": "Santa Fe Institute",
+        "sitePath": "/s/2026-06-05_HR-1_SF_Institute_Subpoena_Duces_Tecum.pdf",
+        "url": "https://www.nmtruthcommission.com/s/2026-06-05_HR-1_SF_Institute_Subpoena_Duces_Tecum.pdf",
+        "cdnUrl": "https://static1.squarespace.com/static/6a07526f760116498ce6b908/t/6a2c845d439df10b33937a90/1781302366793/2026-06-05_HR-1_SF_Institute_Subpoena_Duces_Tecum.pdf",
+        "bytes": 1698037,
+        "verified": true
+      },
+      {
+        "id": "nm_state_land_office",
+        "recipient": "New Mexico State Land Office",
+        "sitePath": "/s/2026-06-05_HR1_NM_State_Land_Office_Subpoena_Duces_Tecum.pdf",
+        "url": "https://www.nmtruthcommission.com/s/2026-06-05_HR1_NM_State_Land_Office_Subpoena_Duces_Tecum.pdf",
+        "cdnUrl": "https://static1.squarespace.com/static/6a07526f760116498ce6b908/t/6a2c8591f1f59f5113eeb9d5/1781302673855/2026-06-05_HR1_NM_State_Land_Office_Subpoena_Duces_Tecum.pdf",
+        "bytes": 1570245,
+        "verified": true
+      },
+      {
+        "id": "nm_department_of_safety",
+        "recipient": "New Mexico Department of Safety",
+        "aliases": ["NMDPS", "Department of Public Safety"],
+        "sitePath": "/s/2026-06-05_HR1_NMDPS_Subpoena_Duces_Tecum.pdf",
+        "url": "https://www.nmtruthcommission.com/s/2026-06-05_HR1_NMDPS_Subpoena_Duces_Tecum.pdf",
+        "cdnUrl": "https://static1.squarespace.com/static/6a07526f760116498ce6b908/t/6a2c8651808bac74074b3fbd/1781302865451/2026-06-05_HR1_NMDPS_Subpoena_Duces_Tecum.pdf",
+        "bytes": 1426971,
+        "verified": true
+      },
+      {
+        "id": "office_of_the_governor",
+        "recipient": "Office of the Governor",
+        "sitePath": "/s/2026-06-05_HR1_Office_of_the_Governor_Subpoena_Duces_Tecum.pdf",
+        "url": "https://www.nmtruthcommission.com/s/2026-06-05_HR1_Office_of_the_Governor_Subpoena_Duces_Tecum.pdf",
+        "cdnUrl": "https://static1.squarespace.com/static/6a07526f760116498ce6b908/t/6a2c867f117d7d02e68290b4/1781302911139/2026-06-05_HR1_Office_of_the_Governor_Subpoena_Duces_Tecum.pdf",
+        "bytes": 1461249,
+        "verified": true
+      }
+    ],
+    "expectedAdditionalTargets": [
+      "Epstein estate",
+      "FBI",
+      "U.S. Department of Justice",
+      "U.S. Attorney Southern District of New York",
+      "U.S. Attorney District of New Mexico",
+      "Deutsche Bank",
+      "J.P. Morgan Chase"
+    ]
+  },
+  "meetings": [
+    {
+      "id": "hisc-2026-06-18-upcoming",
+      "date": "2026-06-18",
+      "title": "House Special Investigatory Committee — teleconference",
+      "status": "upcoming",
+      "sources": {
+        "nmlegis": {
+          "agendaUrl": "https://www.nmlegis.gov/agendas/HISCageJun18.26.pdf",
+          "handoutsListUrl": "https://www.nmlegis.gov/Committee/Handouts_List?CommitteeCode=HISC&Date=6/18/2026",
+          "zoomUrl": "https://us02web.zoom.us/j/88271745882"
+        },
+        "commission": {
+          "note": "July 2026 listed on meetings page; nmlegis shows Jun 18 — poll both"
+        }
+      }
+    },
+    {
+      "id": "hisc-2026-06-01",
+      "date": "2026-06-01",
+      "title": "Survivors' Truth Commission — first public meeting",
+      "status": "past",
+      "harmonyEventId": "79821",
+      "harmony": {
+        "browserUrl": "https://sg001-harmony.sliq.net/00293/Harmony/en/PowerBrowser/PowerBrowserV3/20260609/-1/79821",
+        "powerBrowserVersion": 3,
+        "startTime": "2026-06-01T14:07:35.0000000",
+        "endTime": "2026-06-01T14:53:10.0000000",
+        "durationSeconds": 2736,
+        "streamUrl": "https://sg002-live.sliq.net/00293-vod-2/_definst_/2026/06/01/House%20-%20Investigatory%20Subcommittee_2026-06-01-14.07.35_79821_14.mp4/playlist.m3u8",
+        "captionsSample": "recon/samples/captions-79821.json",
+        "captionSegments": 1275,
+        "captionLangKey": "lang"
+      },
+      "documents": {
+        "commissionHandout": {
+          "sitePath": "/s/NM-Survivors-Truth-Commission-6126.pdf",
+          "url": "https://www.nmtruthcommission.com/s/NM-Survivors-Truth-Commission-6126.pdf",
+          "verified": false,
+          "httpStatus": 404,
+          "fallbackUrl": "https://www.nmlegis.gov/handouts/HISC%20060126%20Item%201%20HISC.pdf",
+          "fallbackBytes": 5793364
+        },
+        "nmlegisAgenda": "https://www.nmlegis.gov/agendas/HISCageJun01.26.pdf",
+        "nmlegisHandoutsList": "https://www.nmlegis.gov/Committee/Handouts_List?CommitteeCode=HISC&Date=6/1/2026"
+      }
+    },
+    {
+      "id": "hisc-2026-02-17",
+      "date": "2026-02-17",
+      "title": "Commission's first meeting (organizational)",
+      "status": "past",
+      "harmonyEventId": "79719",
+      "harmony": {
+        "browserUrl": "https://sg001-harmony.sliq.net/00293/Harmony/en/PowerBrowser/PowerBrowserV2/20260305/-1/79719",
+        "powerBrowserVersion": 2,
+        "startTime": "2026-02-17T10:33:46.0000000",
+        "endTime": "2026-02-17T10:47:31.0000000",
+        "durationSeconds": 825,
+        "streamUrl": "https://sg002-live.sliq.net/00293-vod-2/_definst_/2026/02/17/House%20-%20Investigatory%20Subcommittee_2026-02-17-10.33.46_79719_34.mp4/playlist.m3u8",
+        "captionsSample": "recon/samples/captions-79719.json",
+        "captionSegments": 368,
+        "captionLangKey": "en"
+      },
+      "sources": {
+        "nmlegisRecordingLink": "https://sg001-harmony.sliq.net/00293/Harmony/en/PowerBrowser/PowerBrowserV2/20260305/-1/79719",
+        "commissionRecordingLink": "https://sg001-harmony.sliq.net/00293/Harmony/en/PowerBrowser/PowerBrowserV2/20260305/-1/79719"
+      }
+    },
+    {
+      "id": "ccjc-2025-11-06",
+      "date": "2025-11-06",
+      "title": "Courts, Corrections & Justice Interim Committee — Truth Commission presentation",
+      "status": "past",
+      "documents": {
+        "presentationUrl": "https://www.nmlegis.gov/handouts/CCJ%20110625%20Item%202%20AR%20MA%20Truth%20Commish.pdf"
+      }
+    }
+  ],
+  "watchDates": [
+    { "date": "2026-06-18", "event": "HISC teleconference (nmlegis)" },
+    { "date": "2026-06-30", "event": "Subpoena compliance deadline" },
+    { "date": "2026-07-01", "event": "Commission site lists July 2026 meeting (details TBD)" }
+  ],
+  "adapters": {
+    "NmTruthCommissionAdapter": {
+      "pollUrls": [
+        "https://www.nmtruthcommission.com/subpoena",
+        "https://www.nmtruthcommission.com/meetingsandarchives"
+      ],
+      "extract": [
+        "a[href^='/s/'][href$='.pdf']",
+        "a[href*='harmony.sliq.net']",
+        "a[href*='nmlegis.gov']"
+      ],
+      "normalizeHarmonyUrl": "Strip linkprotect.cudasvc.com wrapper; extract sg001-harmony.sliq.net URL",
+      "resolvePdf": "Follow 302 to static1.squarespace.com CDN"
+    },
+    "NmLegisHiscAdapter": {
+      "pollUrl": "https://www.nmlegis.gov/Committee/Interim_Committee?CommitteeCode=HISC",
+      "extract": [
+        "a[href*='agendas/HISCage']",
+        "a[href*='Handouts_List?CommitteeCode=HISC']",
+        "a[href*='harmony.sliq.net']"
+      ]
+    },
+    "HarmonySliqAdapter": {
+      "discoverEventId": "Regex /-1/(\\d+)(?:#|$)/ on PowerBrowser URL",
+      "fetchTranscript": "GET GetClosedCaption?meetingID={eventId}",
+      "fetchMetadata": "GET GetNewData?id={eventId}&eventLast=undefined&agendaLast=undefined&speakerLast=undefined&viewMode=0&venueId=4",
+      "fetchStream": "GET GetStreamData?id={eventId}",
+      "parseCaptions": "First key in response object holds segment array; map Begin/End/Content"
+    }
+  }
+}
